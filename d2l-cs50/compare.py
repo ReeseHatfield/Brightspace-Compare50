@@ -9,6 +9,7 @@ import sys
 import subprocess
 
 
+# finds the output directory from grading_script module
 def get_extracted_dir():
         
     search_dir = Path(".")
@@ -22,6 +23,7 @@ def get_extracted_dir():
     
 
 
+# deletes the log files from grading_script output
 def delete_log_files():
     pattern = "*.log"
 
@@ -35,20 +37,25 @@ def delete_log_files():
         except OSError as e:
             print(f"Error deleting {file_path}: {e}")
 
+# prepares an individual student directory for the compare50 cli
 def prepare_student(student_dir):
     p = Path(student_dir)
 
-    dirs = [d for d in p.iterdir() if d.is_dir()]
-    if len(dirs) <= 1:
+
+    only_dirs = [d for d in p.iterdir() if d.is_dir()]
+    if len(only_dirs) <= 1:
         return
 
 
     # delete everything except the most recent submission
-    newest = max(dirs, key=lambda d: d.name)
-    for d in dirs:
+    newest = max(only_dirs, key=lambda d: d.name)
+    for d in only_dirs:
         if d != newest:
             shutil.rmtree(d)
 
+# get the name out the output directory
+# if cli flag --name is passed, used that
+# otherwise, prompt
 def get_output_name():
     
     name = None
@@ -65,16 +72,13 @@ def get_output_name():
 
 def main():
     grader.extract_all_from_zip("Project 1 Download Jan 11, 2026 843 AM.zip")
-    
-    
+
     out_dir = get_output_name()
     
-
     extracted_dir = get_extracted_dir()
     if extracted_dir == None:
         print("Error: could not find extraction directory")
         return
-    
     
     delete_log_files()
     
@@ -87,7 +91,7 @@ def main():
             prepare_student(student_dir)
         
     
-    
+    #  there is a real api for this, but its very poorly documented
     subprocess.run(
         ["compare50", "*"],
         cwd=temp_dir,
@@ -95,14 +99,9 @@ def main():
     )
     
     shutil.move(f"{temp_dir}/results", ".")
-
-
-    
     os.rename("results", out_dir)
     
-    
     shutil.rmtree(temp_dir)
-    
     
 
 
