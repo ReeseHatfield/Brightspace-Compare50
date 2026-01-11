@@ -1,7 +1,9 @@
 import compare50
-import grading-script
+from grader_script import grader
 
 if __name__ == "__main__":
     print("Hello world!")
 
-    compare50.comparators.Winnowing()
+    # grader.
+    # compare50.comparators.Winnowing()
+    
