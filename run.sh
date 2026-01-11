@@ -11,7 +11,7 @@ pip install -r requirements.txt
 
 clear
 
-python3 d2l-cs50/compare.py $@
+python3 d2l-cs50/compare.py "$@"
 
 
 rm -f *.log
