@@ -3,6 +3,10 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+*.zip
+StudentSubmission*
+compare_me
+temp
 # C extensions
 *.so
 
