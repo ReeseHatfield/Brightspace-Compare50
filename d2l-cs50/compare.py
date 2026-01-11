@@ -49,8 +49,26 @@ def prepare_student(student_dir):
         if d != newest:
             shutil.rmtree(d)
 
+def get_output_name():
+    
+    name = None
+    if len(sys.argv) >= 2 and sys.argv[1] == "--name":
+        name = sys.argv[2] 
+        return name
+
+    course = input("course: ")
+    semester = input("Semester: ")
+    project = input("Project #: ")
+    
+    return f"{course}-{semester}-Project{project}-comparison" 
+
+
 def main():
     grader.extract_all_from_zip("Project 1 Download Jan 11, 2026 843 AM.zip")
+    
+    
+    out_dir = get_output_name()
+    
 
     extracted_dir = get_extracted_dir()
     if extracted_dir == None:
@@ -60,10 +78,10 @@ def main():
     
     delete_log_files()
     
-    out_dir_name = "temp"
-    os.rename(extracted_dir, out_dir_name)
+    temp_dir = "temp"
+    os.rename(extracted_dir, temp_dir)
     
-    for student_dir in Path(out_dir_name).iterdir():
+    for student_dir in Path(temp_dir).iterdir():
         
         if student_dir.is_dir():
             prepare_student(student_dir)
@@ -72,23 +90,18 @@ def main():
     
     subprocess.run(
         ["compare50", "*"],
-        cwd=out_dir_name,
+        cwd=temp_dir,
         check=True,
     )
     
-    shutil.move(f"{out_dir_name}/results", ".")
+    shutil.move(f"{temp_dir}/results", ".")
 
-    # if sys.argv[1]:
-        
 
-    course = input("course: ")
-    semester = input("Semester: ")
-    project = input("Project #: ")
     
-    os.rename("results", f"{course}-{semester}-{project}-comparison")
+    os.rename("results", out_dir)
     
     
-    shutil.rmtree(out_dir_name)
+    shutil.rmtree(temp_dir)
     
     
 
@@ -96,4 +109,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

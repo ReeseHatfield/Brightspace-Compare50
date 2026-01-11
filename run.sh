@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-if [[ -d "venv" ]]; then
+if [[ ! -d "venv" ]]; then
     python3 -m venv venv
 fi
 
@@ -11,9 +11,9 @@ pip install -r requirements.txt
 
 clear
 
-python3 -m d2l-cs50 $@
+python3 d2l-cs50/compare.py $@
 
 
-rm *.log
+rm -f *.log
 
 deactivate
