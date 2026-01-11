@@ -57,21 +57,26 @@ def prepare_student(student_dir):
 # if cli flag --name is passed, used that
 # otherwise, prompt
 def get_output_name():
-    
-    name = None
-    if len(sys.argv) >= 2 and sys.argv[1] == "--name":
-        name = sys.argv[2] 
-        return name
+    if "--name" in sys.argv:
+        name_index = sys.argv.index("--name") + 1
+        if name_index < len(sys.argv):
+            return sys.argv[name_index]
+        else:
+            print("Error: --name flag provided but no name given")
+            sys.exit(1)
 
     course = input("course: ")
     semester = input("Semester: ")
     project = input("Project #: ")
     
-    return f"{course}-{semester}-Project{project}-comparison" 
-
+    return f"{course}-{semester}-Project{project}-comparison"
 
 def main():
-    grader.extract_all_from_zip("Project 1 Download Jan 11, 2026 843 AM.zip")
+    
+    # todo error check this
+    input_file = sys.argv[1]
+    print(f"input file: {input_file}")
+    grader.extract_all_from_zip(input_file)
 
     out_dir = get_output_name()
     
