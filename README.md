@@ -26,12 +26,12 @@ This provides an open source pipeline for turning Brightspace downloads into the
 ## Usage:
 Use the run script
 ```bash
-    ./run d2l_download.zip [--name OUTPUT_NAME]
+    ./run *.zip [--name OUTPUT_NAME]
 ```
 or use the python directly, if using a virtual environment
 ```bash
     pip install -r requirements.txt
-    python3 d2l-cs50/compare.py d2l_download.zip [--name OUTPUT_NAME]
+    python3 d2l-cs50/compare.py [ZIP_FILES] [--name OUTPUT_NAME]
 ```
 
 ## Special Thanks
