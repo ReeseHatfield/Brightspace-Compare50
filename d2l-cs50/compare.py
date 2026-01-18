@@ -74,23 +74,61 @@ def get_output_name():
 def main():
     
     # todo error check this
-    input_file = sys.argv[1]
-    print(f"input file: {input_file}")
-    grader.extract_all_from_zip(input_file)
+    # input_file = sys.argv[1]
+
+    name_index = len(sys.argv)
+    if "--name" in sys.argv:
+        name_index = sys.argv.index("--name")
+        
+    
+    input_files = sys.argv[1:name_index]
+    
+    print(f"input files: {input_files}")
+
+    temp_files = []
+
+    for (i,file) in enumerate(input_files):
+        grader.extract_all_from_zip(file)
+        
+        
+        extracted_dir = get_extracted_dir()
+        if extracted_dir == None:
+            print("Error: could not find extraction directory")
+            return
+        
+        delete_log_files()
+        
+        temp_dir = f"temp-{i}"
+        temp_files.append(temp_dir)
+        os.rename(extracted_dir, temp_dir)
+        
+
+    
+    final_dir = "final_temp"
+    os.mkdir(final_dir)
+    for temp in temp_files:
+        print(f"temp in tempfiles:{temp}")
+        for student_file in Path(temp).iterdir():
+            print(f"student_file: {student_file}")
+            
+            # skip random index file
+            # print(f"studentfile name: {student_file.name}")
+            if "index.html" in student_file.name:
+                
+                os.remove(student_file)
+                continue
+            
+            shutil.move(student_file, final_dir)
+            
+            
+    for file in temp_files:
+        shutil.rmtree(file)
+
 
     out_dir = get_output_name()
     
-    extracted_dir = get_extracted_dir()
-    if extracted_dir == None:
-        print("Error: could not find extraction directory")
-        return
     
-    delete_log_files()
-    
-    temp_dir = "temp"
-    os.rename(extracted_dir, temp_dir)
-    
-    for student_dir in Path(temp_dir).iterdir():
+    for student_dir in Path(final_dir).iterdir():
         
         if student_dir.is_dir():
             prepare_student(student_dir)
@@ -99,15 +137,19 @@ def main():
     #  there is a real api for this, but its very poorly documented
     subprocess.run(
         ["compare50", "*"],
-        cwd=temp_dir,
+        cwd=final_dir,
         check=True,
     )
     
-    shutil.move(f"{temp_dir}/results", ".")
+    shutil.move(f"{final_dir}/results", ".")
     os.rename("results", out_dir)
     
-    shutil.rmtree(temp_dir)
+    os.rename(final_dir, "submissions")
+    shutil.move("submissions", out_dir)
     
+    
+    print("Ignore the above message")
+    print(f"To view the results, open {out_dir}/index.html in a browser")
 
 
 
