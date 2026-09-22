@@ -2,7 +2,7 @@ attrs==20.3.0
 certifi==2026.1.4
 cffi==2.0.0
 charset-normalizer==3.4.4
-compare50==1.2.13
+compare50 @ git+https://github.com/ReeseHatfield/rh50.git@44d9c3e00be52b25c5bd14d4f54cdc54e8aa0e85
 cryptography==46.0.3
 cs118x-grading-script @ git+https://github.com/OfficeCoffee/GradingFileProject.git@ad9cda6deba44d149fc36e2fa19186c773051866
 idna==3.11
